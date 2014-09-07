@@ -12,7 +12,7 @@ function createArray(length) {
 	}
 
 	return arr;
-}
+};
 
 function drawMap(square, callback) {
 	//map = createArray(1000 / square, 1000 / square);
@@ -51,13 +51,13 @@ function drawMap(square, callback) {
 			}
 		}
 		drawBoats(boats, square);
-		callback();
+		callback(map, boats);
 
 	}, function(jqXHR, textStatus, errorThrown) {
 		alert('error ' + textStatus + " " + errorThrown);
 	});
 
-}
+};
 
 function drawGrid(square) {
 	var c = document.getElementById("BattleMap");
@@ -70,7 +70,7 @@ function drawGrid(square) {
 		ctx.lineTo(1000, i * square);
 		ctx.stroke();
 	}
-}
+};
 
 function drawboat(circle, square) {
 	var c = document.getElementById("BattleMap");
@@ -89,7 +89,7 @@ function drawboat(circle, square) {
 	} catch(err) {
 		console.error(err);
 	}
-}
+};
 
 function boatDetails(X, Y, Owner, HP) {
 	var balloon = document.getElementById("InfoBalloon");
@@ -112,15 +112,15 @@ function boatDetails(X, Y, Owner, HP) {
 	// draw theInfo
 	popCtx.font = "10pt arial";
 	popCtx.fillStyle = "black";
-	popCtx.fillText("Owner: "+Owner, 10, 35);
-	popCtx.fillText("HP: "+HP, 10, 65);
+	popCtx.fillText("Owner: " + Owner, 10, 35);
+	popCtx.fillText("HP: " + HP, 10, 65);
 	popCtx.restore();
 	// move the balloon canvas to the target
 	$("#InfoBalloon").css({
 		left : X,
 		top : Y
 	});
-}
+};
 
 function drawBoats(boats, square) {
 	for (var i = 0; i < boats.length; i++) {
@@ -129,7 +129,7 @@ function drawBoats(boats, square) {
 		var infoline = '<span id="boat' + i + '">' + boat.bx + ',' + boat.by + ',' + boat.face + ',' + boat.owner + ',' + boat.hp + '</span>';
 		$("#boats").append(infoline);
 	}
-}
+};
 
 function drawMarks(playerID) {
 	var c = document.getElementById("BattleMap");
@@ -150,11 +150,11 @@ function drawMarks(playerID) {
 	};
 	mark.src = "./images/X_mark.png";
 
-}
+};
 
 function setMap(size) {
 	drawMap(size);
 	drawBoats(size);
 	drawMarks(size);
-}
+};
 

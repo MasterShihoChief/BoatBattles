@@ -14,13 +14,21 @@
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<style>
 			body {
-				background-color:ivory;
+				background-color: ivory;
+			}
+			#Map {
+				width: 1025px;
+				float: left;
+			}
+			#Controls {
+				width: 175px float :left;
 			}
 			#BattleMap {
-				border:1px solid black;
+				border: 1px solid black;
 			}
 			#InfoBalloon {
-				position:absolute;
+				position: absolute;
+				left: -200;
 			}
 		</style>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -39,12 +47,15 @@
 				var offsetY = canvasOffset.top;
 				var square = 25;
 				var boats = [];
-				drawMap(square, function() {
-					var numboats = document.getElementById("boats").childNodes.length;
-					for ( i = 0; i < numboats; i++) {
-						var boatinfo = document.getElementById("boat" + i).innerHTML.split(",");
-						boats.push(boatinfo);
-					}
+				var map = {};
+				drawMap(square, function(gamemap, gameboats) {
+					// var numboats = document.getElementById("boats").childNodes.length;
+					// for ( i = 0; i < numboats; i++) {
+					// var boatinfo = document.getElementById("boat" + i).innerHTML.split(",");
+					// boats.push(boatinfo);
+					// }
+					map = gamemap;
+					boats = gameboats;
 				});
 
 				// listen for clicks on the canvas and show the balloon
@@ -55,13 +66,17 @@
 
 					// see if we clicked on any targets
 					for (var i = 0; i < boats.length; i++) {
-						var boat = boats[i];
-						var dx = (boat[0] * square) - mouseX + (square / 2);
-						var dy = (boat[1] * square) - mouseY + (square / 2);
-						var radius = square / 2;
-						// true if we clicked in the target circle
-						if (((dx * dx) + (dy * dy)) <= (radius * radius)) {
-							boatDetails((boat[0] * square) + (square / 2) + offsetX, (boat[1] * square) + (square / 2) + offsetY - 100, boat[3], boat[4]);
+						try {
+							var boat = boats[i];
+							var dx = (boat.bx * square) - mouseX + (square / 2);
+							var dy = (boat.by * square) - mouseY + (square / 2);
+							var radius = square / 2;
+							// true if we clicked in the target circle
+							if (((dx * dx) + (dy * dy)) <= (radius * radius)) {
+								boatDetails((boat.bx * square) + (square / 2) + offsetX, (boat.by * square) + (square / 2) + offsetY - 100, boat.owner, boat.hp);
+							}
+						} catch(err) {
+							throw err;
 						}
 					}
 				});
@@ -83,20 +98,28 @@
 			<header>
 				<h1>Boat Battles V0.1</h1>
 			</header>
-			<div>
+			<div id="Map">
 				<script src="boatbattles.js"></script>
-				<button type="button" onclick="setMap(25)">
-					Load Map
-				</button>
-				<button type="button" onclick="drawGrid(25)">
-					Draw Grid
-				</button>
 				<br/>
 				<canvas id='BattleMap' width="1000" height="1000" style="border:1px solid #000000;"></canvas>
 				<canvas id="InfoBalloon" width=105 height=105></canvas>
 			</div>
-
-			<footer>
+			<div id="Controls">
+				<button type="button" onclick="drawGrid(25)">
+					Draw Grid
+				</button>
+				<br />
+				<button type="button" name="left">
+					Turn Left
+				</button>
+				<button type="button" name="forward">
+					Forward!
+				</button>
+				<button type="button" name="right">
+					Turn Right
+				</button>
+			</div>
+			<footer style="clear: all;">
 				<p>
 					&copy; Copyright 2014 by Clayton Headley
 				</p>
