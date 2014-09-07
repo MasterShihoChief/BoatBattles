@@ -14,7 +14,7 @@ function createArray(length) {
 	return arr;
 }
 
-function drawMap(square) {
+function drawMap(square, callback) {
 	//map = createArray(1000 / square, 1000 / square);
 	$.getJSON("http://127.0.0.1:80/genmap?square=" + square, function(data) {
 		map = data.map;
@@ -51,6 +51,7 @@ function drawMap(square) {
 			}
 		}
 		drawBoats(boats, square);
+		callback();
 
 	}, function(jqXHR, textStatus, errorThrown) {
 		alert('error ' + textStatus + " " + errorThrown);
@@ -71,24 +72,62 @@ function drawGrid(square) {
 	}
 }
 
-function drawCircle(circle, square) {
+function drawboat(circle, square) {
 	var c = document.getElementById("BattleMap");
 	var ctx = c.getContext("2d");
-	ctx.save();
-	ctx.beginPath();
-	ctx.fillStyle = circle.color;
-	ctx.strokeStyle = "black";
-	ctx.lineWidth = 3;
-	ctx.arc(circle.bx, circle.by, square / 2, 0, Math.PI * 2, false);
-	ctx.closePath();
-	ctx.fill();
-	ctx.stroke();
-	ctx.restore();
+	try {
+		ctx.save();
+		ctx.beginPath();
+		ctx.fillStyle = "brown";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 3;
+		ctx.arc((circle.bx * square) + (square / 2), (circle.by * square) + (square / 2), square / 2, 0, Math.PI * 2, false);
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+		ctx.restore();
+	} catch(err) {
+		console.error(err);
+	}
+}
+
+function boatDetails(X, Y, Owner, HP) {
+	var balloon = document.getElementById("InfoBalloon");
+	var popCtx = balloon.getContext("2d");
+	popCtx.save();
+	popCtx.fillStyle = "#FFF";
+	popCtx.strokeStyle = "#000";
+	// draw the balloon
+	popCtx.beginPath();
+	popCtx.moveTo(52, 02);
+	popCtx.quadraticCurveTo(02, 02, 02, 42);
+	popCtx.quadraticCurveTo(02, 77, 27, 77);
+	popCtx.quadraticCurveTo(27, 102, 07, 102);
+	popCtx.quadraticCurveTo(37, 102, 42, 77);
+	popCtx.quadraticCurveTo(102, 77, 102, 42);
+	popCtx.quadraticCurveTo(102, 02, 52, 02);
+	popCtx.lineWidth = 3;
+	popCtx.stroke();
+	popCtx.fill();
+	// draw theInfo
+	popCtx.font = "10pt arial";
+	popCtx.fillStyle = "black";
+	popCtx.fillText("Owner: "+Owner, 10, 35);
+	popCtx.fillText("HP: "+HP, 10, 65);
+	popCtx.restore();
+	// move the balloon canvas to the target
+	$("#InfoBalloon").css({
+		left : X,
+		top : Y
+	});
 }
 
 function drawBoats(boats, square) {
 	for (var i = 0; i < boats.length; i++) {
-		drawCircle(boats[i], square);
+		var boat = boats[i];
+		drawboat(boat, square);
+		var infoline = '<span id="boat' + i + '">' + boat.bx + ',' + boat.by + ',' + boat.face + ',' + boat.owner + ',' + boat.hp + '</span>';
+		$("#boats").append(infoline);
 	}
 }
 
@@ -118,3 +157,4 @@ function setMap(size) {
 	drawBoats(size);
 	drawMarks(size);
 }
+

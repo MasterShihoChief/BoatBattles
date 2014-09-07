@@ -1,7 +1,6 @@
 var express = require('express');
 var jade = require('jade');
 var app = express();
-var gen = require("./generator.js");
 
 app.use(express.static(__dirname + '/public'));
 
