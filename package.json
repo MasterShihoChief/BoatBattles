@@ -1,0 +1,9 @@
+{
+  "name": "battle_boats_server",
+  "description": "The Battle Boats Test Server",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "4.x"
+  }
+}

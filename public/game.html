@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Boat Battles</title>
+		<meta name="description" content="" />
+		<meta name="author" content="Clayton Headley" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	</head>
+
+	<body>
+		<div>
+			<header>
+				<h1>Boat Battles V0.1</h1>
+			</header>
+			<div>
+				<script src="boatbattles.js"></script>
+				<button type="button" onclick="setMap(25)">Load Map</button><button type="button" onclick="drawGrid(50)">Draw Grid</button><br/>
+				<canvas id='BattleMap' width="1000" height="1000" style="border:1px solid #000000;"></canvas>
+				
+			</div>
+
+			<footer>
+				<p>
+					&copy; Copyright 2013 by Clayton Headley
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>
