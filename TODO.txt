@@ -1,0 +1,29 @@
+Things left to implement:
+
+Boats:
+Spawning
+Shooting
+Moving
+Sinking
+Got the Gold Flag
+
+X's:
+Spawn x's on the map
+Set gold to one x
+remove x for player when dig action performed
+remove all x's when gold is found by a player
+
+Player Controls:
+Input player moves
+Replay last turn
+
+Server:
+Parse Player Moves on timer
+
+Database:
+Game Moves
+Boat Stats
+Move Queue
+
+Known bugs:
+Bug: Ship details - fix the offset issue when the user clicks on a boat after having scrolled the page
