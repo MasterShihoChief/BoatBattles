@@ -14,21 +14,22 @@
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<style>
 			body {
-				background-color: ivory;
+				background-color:ivory;
 			}
 			#Map {
-				width: 1025px;
-				float: left;
+				width:1025px;
+				float:left;
 			}
 			#Controls {
-				width: 175px float :left;
+				width:175px;
+				float:left;
 			}
 			#BattleMap {
-				border: 1px solid black;
+				border:1px solid black;
 			}
 			#InfoBalloon {
-				position: absolute;
-				left: -200;
+				position:absolute;
+				left:-200;
 			}
 		</style>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -48,16 +49,12 @@
 				var square = 25;
 				var boats = [];
 				var map = {};
-				drawMap(square, function(gamemap, gameboats) {
-					// var numboats = document.getElementById("boats").childNodes.length;
-					// for ( i = 0; i < numboats; i++) {
-					// var boatinfo = document.getElementById("boat" + i).innerHTML.split(",");
-					// boats.push(boatinfo);
-					// }
-					map = gamemap;
-					boats = gameboats;
-				});
-
+				var xmarks = [];
+				// drawMap(1, function(gamemap, gameboats, gamex) {
+					// map = gamemap;
+					// boats = gameboats;
+					// xmarks = gamex;
+				// });
 				// listen for clicks on the canvas and show the balloon
 				$("#BattleMap").click(function(e) {
 					// get the mouseclick position
@@ -79,6 +76,15 @@
 							throw err;
 						}
 					}
+				});
+				$("#loadmap").click(function() {
+					var load = document.getElementById('mapNum').value;
+					alert(load);
+					drawMap(load, function(gamemap, gameboats, gamex) {
+						map = gamemap;
+						boats = gameboats;
+						xmarks = gamex;
+					});
 				});
 
 				// listen for clicks on the balloon and then hide the balloon
@@ -105,6 +111,12 @@
 				<canvas id="InfoBalloon" width=105 height=105></canvas>
 			</div>
 			<div id="Controls">
+				<button type="button" id="loadmap">
+					Draw Map
+				</button>
+				<form>
+					<input type="text" id="mapNum" />
+				</form>
 				<button type="button" onclick="drawGrid(25)">
 					Draw Grid
 				</button>
@@ -119,12 +131,11 @@
 					Turn Right
 				</button>
 			</div>
-			<footer style="clear: all;">
+			<footer style="clear: both;">
 				<p>
 					&copy; Copyright 2014 by Clayton Headley
 				</p>
 			</footer>
-			<div id="boats" style="visibility: hidden;"></div>
 		</div>
 	</body>
 </html>

@@ -1,6 +1,8 @@
 var express = require('express');
 var jade = require('jade');
 var app = express();
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('battleboats.db');
 
 app.use(express.static(__dirname + '/public'));
 
@@ -20,9 +22,9 @@ app.route("/genmap").get(function(req, res) {
 		map.push([]);
 		for ( j = 0; j < (1000 / square); j++) {
 			if (Math.floor((Math.random() * 10) + 1) < 3 == 0) {
-				map[i].push("water");
+				map[i].push(0);
 			} else {
-				map[i].push("land");
+				map[i].push(1);
 			}
 		}
 	}
@@ -30,19 +32,19 @@ app.route("/genmap").get(function(req, res) {
 	for ( i = 0; i < (1000 / square); i++) {
 		for ( j = 0; j < (1000 / square); j++) {
 			try {
-				if (map[i][j] == "water") {
+				if (map[i][j] == 0) {
 					continue;
 				} else {
-					if (j > 0 && map[i][j - 1] == "land") {
+					if (j > 0 && map[i][j - 1] == 1) {
 						continue;
-					} else if (i > 0 && map[i - 1][j] == "land") {
+					} else if (i > 0 && map[i - 1][j] == 1) {
 						continue;
-					} else if (i < (1000 / square) - 1 && map[i + 1][j] == "land") {
+					} else if (i < (1000 / square) - 1 && map[i + 1][j] == 1) {
 						continue;
-					} else if (j < (1000 / square) - 1 && map[i][j + 1] == "land") {
+					} else if (j < (1000 / square) - 1 && map[i][j + 1] == 1) {
 						continue;
 					} else {
-						map[i][j] = "water";
+						map[i][j] = 0;
 					}
 				}
 			} catch(err) {
@@ -63,63 +65,61 @@ app.route("/genmap").get(function(req, res) {
 	do {
 		dx = Math.floor((Math.random() * 20) + 1);
 		dy = Math.floor((Math.random() * 20) + 1);
-		if (dx > 0 && map[dy][dx - 1] == "land") {
+		if (dx > 0 && map[dy][dx - 1] == 1) {
 			dock = true;
-		} else if (dy > 0 && map[dy - 1][dx] == "land") {
+		} else if (dy > 0 && map[dy - 1][dx] == 1) {
 			dock = true;
-		} else if (dy < (1000 / square) - 1 && map[dy + 1][dx] == "land") {
+		} else if (dy < (1000 / square) - 1 && map[dy + 1][dx] == 1) {
 			dock = true;
-		} else if (dx < (1000 / square) - 1 && map[dy][dx + 1] == "land") {
+		} else if (dx < (1000 / square) - 1 && map[dy][dx + 1] == 1) {
 			dock = true;
 		}
-		if (map[dy][dx] == "land") {
+		if (map[dy][dx] == 1) {
 			dock = false;
 		}
-		
+
 	} while(dock == false);
-	var docks = {
-		"dockx" : dx,
-		"docky" : dy
-	};
-	var boat1 = {
-		"bx" : 4,
-		"by" : 3,
-		"face": 1,
-		"hp" : 3,
-		"owner" : "player1"
-	};
-	var boat2 = {
-		"bx" : 12,
-		"by" : 5,
-		"face": 3,
-		"hp" : 3,
-		"owner" : "player2"
-	};
-	var boat3 = {
-		"bx" : 13,
-		"by" : 3,
-		"face": 5,
-		"hp" : 13,
-		"owner" : "player3"
-	};
-	var boat4 = {
-		"bx" : 1,
-		"by" : 10,
-		"face": 7,
-		"hp" : 3,
-		"owner" : "player4"
-	};
-	var boats = [boat1, boat2, boat3, boat4];
-	res.send(JSON.stringify({
-		"map" : map,
-		"dock" : docks,
-		"boats" : boats
-	}));
+	var mapstring = "";
+	for ( i = 0; i < (1000 / square); i++) {
+		for ( j = 0; j < (1000 / square); j++) {
+			mapstring += map[i][j] + ",";
+		}
+	}
+	var querry = "INSERT INTO maps (map,dx,dy,square) VALUES (\"" + mapstring + "\", " + dx + ", " + dy + ", " + square + ")";
+	db.run(querry, function(err) {
+		if (err != null) {
+			console.log(err);
+			res.send("Failed to add record to DB!" + '\n' + err + '\n' + querry);
+		} else {
+			res.send("Sucess!");
+
+		}
+	});
 }).post(function(req, res) {
 	//New Game Logic Here
 });
 
 app.route("/playerX");
+
+app.route("/map").get(function(req, res) {
+	var mapid = req.query.mapid;
+	var querry = "SELECT * FROM maps WHERE mapID = " + mapid;
+	db.get(querry, function(err, row) {
+		if (row != null) {
+			var map = row.map;
+			var dx = row.dx;
+			var dy = row.dy;
+			res.send({
+				"square" : row.square,
+				"map" : map,
+				"dx" : dx,
+				"dy" : dy
+			});
+		} else {
+			res.send("0");
+		}
+	});
+});
 
 app.use(function(req, res) {
 	res.status(400);
